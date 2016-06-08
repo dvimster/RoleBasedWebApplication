@@ -1,0 +1,110 @@
+﻿@model RoleBasedWebApplication.Models.Artifact
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+
+<div class="c-list">
+    <h2>Создание нового артифакта</h2>
+    
+    <p class="text-right">
+        @Html.ActionLink("К списку артифактов", "Index", null, new {@class = "btn btn-primary"})
+    </p>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        
+            <hr/>
+            @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-12"})
+                    @Html.TextAreaFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" }, cols = 80, rows = 10 })
+                    @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.OrderWorth, htmlAttributes: new {@class = "control-label"})
+                    @Html.EditorFor(model => model.OrderWorth, new {htmlAttributes = new {@class = "form-control"}})
+                    @Html.ValidationMessageFor(model => model.OrderWorth, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SaleWorth, htmlAttributes: new {@class = "control-label"})
+                    @Html.EditorFor(model => model.SaleWorth, new {htmlAttributes = new {@class = "form-control"}})
+                    @Html.ValidationMessageFor(model => model.SaleWorth, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ArtifactImageId, "Картинка", htmlAttributes: new {@class = "control-label"})
+                @*@Html.DropDownList("ArtifactImageId", null, htmlAttributes: new {@class = "form-control"})*@
+                <select class="form-control artifactsImageList" name="ArtifactImageId"></select>
+                    @Html.ValidationMessageFor(model => model.ArtifactImageId, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ArtifactIconId, "Иконка", htmlAttributes: new {@class = "control-label"})
+                @*@Html.DropDownList("ArtifactIconId", null, htmlAttributes: new {@class = "form-control"})*@
+                <select class="form-control artifactsIconList" name="ArtifactIconId"></select>
+                    @Html.ValidationMessageFor(model => model.ArtifactIconId, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ArtifactClassId, "Класс", htmlAttributes: new {@class = "control-label"})
+                    @Html.DropDownList("ArtifactClassId", null, htmlAttributes: new {@class = "form-control"})
+                    @Html.ValidationMessageFor(model => model.ArtifactClassId, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ArtifactTypeId, "Тип", htmlAttributes: new {@class = "control-label"})
+                    @Html.DropDownList("ArtifactTypeId", null, htmlAttributes: new {@class = "form-control"})
+                    @Html.ValidationMessageFor(model => model.ArtifactTypeId, "", new {@class = "text-danger"})
+            </div>
+
+            <div class="form-group">
+                
+            </div>
+
+        <div class="form-group">
+            
+            @Html.LabelFor(model => model.Properties, htmlAttributes: new {@class = "control-label col-md-12"})
+            <p class="lead">
+                <span onclick="addProperty('Rad')" class="label label-default">Rad</span>
+                <span onclick="addProperty('Chem')" class="label label-primary">Chem</span>
+                <span onclick="addProperty('Elec')" class="label label-success">Elec</span>
+                <span onclick="addProperty('Therm')" class="label label-info">Therm</span>
+                <span onclick="addProperty('Psy')" class="label label-warning">Psy</span>
+                <span onclick="addProperty('Energy')" class="label label-danger">Energy</span>
+                <span onclick="addProperty('Health')" class="label label-warning">Health</span>
+                <span onclick="addProperty('Hunger')" class="label label-info">Hunger</span>
+                <span onclick="addProperty('Wound')" class="label label-success">Wound</span>
+                <span onclick="addProperty('Weight')" class="label label-primary">Weight</span>
+                <p>
+                    <a href="#" class="btn btn-default erase-properties" onclick="ereseProperties();">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </p>
+            </p>
+            @Html.TextAreaFor(model => model.Properties, new {htmlAttributes = new {@class = "form-control"}, cols = 80, rows = 10, @readonly = true})
+            @Html.ValidationMessageFor(model => model.Properties, "", new {@class = "text-danger"})
+        </div>
+
+            <div class="form-group">
+                <div class="">
+                    <input type="submit" value="Создать" class="btn btn-default"/>
+                </div>
+            </div>
+    }
+
+</div>
+<script>
+    
+    
+</script>

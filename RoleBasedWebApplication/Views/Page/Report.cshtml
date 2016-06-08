@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNet.Identity
+@foreach (var item in Model)
+{
+    <div class="col-md-12">
+        <div class="well">
+            <p>Название артифакта: @item</p>
+            <p>Артифакт куплен для персонажа: @ViewBag.CharacterName</p>
+            <p>Время покупки: @item</p>
+        </div>
+    </div>
+}

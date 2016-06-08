@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNet.Identity
+@model PagedList.IPagedList<RoleBasedWebApplication.Models.Buying>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Selling";
+}
+
+<h2>Продажа артифактов</h2>
+
+<div class="col-md-12">
+    <p class="text-right">
+        @Html.ActionLink("К списку персонажей", "CharacterList", "Page", null, new { @class = "btn btn-primary" })
+    </p>
+</div>
+
+@if (Model.Count().Equals(0))
+{
+    <div class="c-list well lead">
+        <p>Этот персонаж не приобрел еще артифактов</p>
+        <p>Перейдите к @Html.ActionLink("покупкам", "Buying", "Page", new { id = Url.RequestContext.RouteData.Values["id"] }, new { @class = "btn btn-warning" })</p>
+    </div>
+}
+
+@foreach (var item in Model)
+{
+    <div class="col-md-12">
+        <div class="well">
+            <p>Название артифакта: @item.Artifact.Name</p>
+            <p>Артифакт куплен для персонажа: @ViewBag.CharacterName</p>
+            <p>Время покупки: @item.DateTime</p>
+            <div class="text-right">
+                @using (Html.BeginForm())
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="hidden" name="UserId" value="@User.Identity.GetUserId()" />
+                    <input type="hidden" name="ArtifactId" value="@item.Id" />
+                    <input type="hidden" name="SaleWorth" value="@item.Artifact.SaleWorth" />
+                    <input type="hidden" name="CharacterId" value="@Url.RequestContext.RouteData.Values["id"]" />
+                    <input type="submit" value="Продать" class="btn btn-primary" />
+                }
+            </div>
+        </div>
+    </div>
+}
+<div>
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Selling", new { page, id = Url.RequestContext.RouteData.Values["id"] }))
+</div>

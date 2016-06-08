@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "Магазин артифактов";
+}
+&nbsp;
+<div class="text-center">
+    @Html.ActionLink("Покупка", "Buying", "Page", new { id = Url.RequestContext.RouteData.Values["id"] }, new { @class = "btn btn-lg btn-primary" })
+    @Html.ActionLink("Продажа", "Selling", "Page", new { id = Url.RequestContext.RouteData.Values["id"] }, new { @class = "btn btn-lg btn-danger" })
+</div>
+

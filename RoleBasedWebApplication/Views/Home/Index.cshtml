@@ -1,0 +1,29 @@
+﻿@using RoleBasedWebApplication.Models
+@model RoleBasedWebApplication.Models.CustomUser
+@{
+    ViewBag.Title = "Home Page";
+}
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="c-list well">
+        <p class="lead">
+            Для входа в приложение @Html.ActionLink("Зарегестрируйтесь", "Register", "Account", null, new { @class = "btn btn-warning" }) 
+        </p>
+        <p class="lead">
+            или выполните @Html.ActionLink("Вход", "Login", "Account", null, new { @class = "btn btn-warning" })
+        </p>
+    </div>
+}
+else
+{
+    <div class="c-list well text-center">
+        @if (User.IsInRole(SecurityRoles.User))
+        {
+            @Html.ActionLink("Перейти к персонажам", "CharacterList", "Page", null, new { @class = "btn btn-primary" })
+        }
+        @if (User.IsInRole(SecurityRoles.Admin))
+        {
+            @Html.ActionLink("Перейти к Управлению артефактами", "Index", "Admin", null, new { @class = "btn btn-primary" })
+        }
+    </div>
+}

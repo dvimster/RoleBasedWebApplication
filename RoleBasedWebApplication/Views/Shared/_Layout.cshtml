@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Base Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        input, select, textarea {
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Role Base Application", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                @*<ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li>@Html.ActionLink("About", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    </ul>*@
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/ddslick.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        $(function () {
+            var imageList = [];
+            for (var i = 1; i <= 6; i++) {
+                var image = {
+                    text: "",
+                    value: "6",
+                    imageSrc: "../Content/Img/Characters/" + i + ".jpg"
+                };
+                imageList.push(image);
+            };
+
+            $('.imageList').ddslick({
+                data: imageList,
+                width: 330,
+                imagePosition: "left",
+                selectText: "Выберите аватар для вешего персонажа",
+                onSelected: function (data) {
+                    console.log(data);
+                }
+            });
+
+            var artifactsImageList = [];
+            for (var i = 1; i <= 23; i++) {
+                var image = {
+                    text: "",
+                    value: i,
+                    imageSrc: "../Content/Img/Artifacts/" + i + ".png"
+                };
+                artifactsImageList.push(image);
+            }
+
+            
+
+            $('.artifactsImageList').ddslick({
+                data: artifactsImageList,
+                width: 300,
+                imagePosition: "left",
+                selectText: "Выберите картинку для артифакта",
+                onSelected: function (data) {
+                    console.log(data);
+                }
+            });
+
+            
+
+            $('.artifactsIconList').ddslick({
+                data: artifactsImageList,
+                width: 300,
+                imagePosition: "left",
+                selectText: "Выберите иконку для артифакта",
+                onSelected: function (data) {
+                    console.log(data);
+                }
+            });
+
+            $('.detail').hide();
+
+        });
+
+        var showDetailInfo = function (show) {
+            $('#' + show).show();
+        };
+
+        var hideDetailInfo = function (hide) {
+            $('#' + hide).hide();
+        };
+
+        var addProperty = function (property) {
+            var propertyField = $('#Properties');
+
+            if (propertyField.text() === '') {
+                propertyField.append(property);
+            } else {
+                propertyField.append(', ' + property);
+            }
+
+        }
+
+        var ereseProperties = function () {
+            $('#Properties').text('');
+        }
+    </script>
+</body>
+</html>

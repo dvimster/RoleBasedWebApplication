@@ -1,0 +1,84 @@
+﻿@model RoleBasedWebApplication.Models.Artifact
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="a-list">
+    <h2>Информация о артефакте</h2>
+    <p class="text-right">
+        @Html.ActionLink("К списку артифактов", "Index", null, new { @class = "btn btn-primary" }) |
+        @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+
+    </p>
+</div>
+<div class="a-list well lead">
+    <h4>@Model.Name</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Класс
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArtifactClass.Name)
+        </dd>
+
+        <dt>
+            Иконка
+        </dt>
+
+        <dd>
+            <img src="~/Content/Img/Artifacts/@Html.DisplayFor(model => model.ArtifactIcon.Src)" hight="30px" width="30px" alt="" />
+        </dd>
+
+        <dt>
+            Картинка
+        </dt>
+
+        <dd>
+            <img src="~/Content/Img/Artifacts/@Html.DisplayFor(model => model.ArtifactImage.Src)" alt="" />
+        </dd>
+
+        <dt>
+            Тип
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArtifactType.Name)
+        </dd>
+
+        <dt>
+            Описание
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            Стоимость
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderWorth)
+        </dd>
+
+        <dt>
+            Продажная стоимость
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SaleWorth)
+        </dd>
+
+        <dt>
+            Свойства
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Properties)
+        </dd>
+
+    </dl>
+</div>
+

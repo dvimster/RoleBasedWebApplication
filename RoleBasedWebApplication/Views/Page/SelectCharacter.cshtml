@@ -1,0 +1,38 @@
+﻿@using RoleBasedWebApplication.Models
+@model IEnumerable<RoleBasedWebApplication.Models.Character>
+@{
+    ViewBag.Title = "SelectCharacter";
+}
+<div class="c-list">
+    <h2>Ваш персонаж</h2>
+    <p class="text-right">
+        @Html.ActionLink("Назад", "CharacterList", "Page", null, new { @class = "btn btn-primary" })
+    </p>
+    <ul class="list-group">
+        @foreach (var item in Model)
+        {
+            ViewBag.id = item.Id;
+            <li class="list-group-item">
+                <p>
+                    <strong>Аватар:</strong> <br/>
+                    <img src="~/Content/Img/Characters/@item.CharacterAvatar.Avatar" alt="@item.CharacterAvatar.Title"/> <br/>
+                </p>
+                <p>
+                    <strong>Имя:</strong> @item.Name
+                </p>
+                <p>
+                    <strong>Расса:</strong> @item.CharacterRase.Name
+                </p>
+                <p>
+                    <strong>Тип:</strong> @item.CharacterType.Name
+                </p>
+                <p>
+                <strong>Количество монет:</strong> @item.GoldDime
+                <p>
+                <p class="text-right">
+                    @Html.ActionLink("Перейти в магазин", "Store/" + item.Id, "Page", null, new {@class = "btn btn-lg btn-primary"})
+                </p>
+            </li>
+        }
+    </ul>
+</div>

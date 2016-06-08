@@ -1,0 +1,49 @@
+﻿@model PagedList.IPagedList<RoleBasedWebApplication.Models.Character>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "CharacterList";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="c-list">
+            @if (Model.Count() < 1)
+            {
+                <div class="c-list well">
+                    <p class="lead">У вас еще нет персонажей. @Html.ActionLink("Создать персонажа", "CreateCharacter", "Page", null, new { @class = "btn btn-warning" })</p>
+                </div>
+            }
+            else
+            {
+                <h2>Ваши персонажы</h2>
+                <p class="text-right">
+                    @Html.ActionLink("Создать персонажа", "CreateCharacter", "Page", null, new { @class = "btn btn-primary" })
+                </p>
+                <ul class="list-group">
+                    @foreach (var item in Model)
+                    {
+                        <li class="list-group-item">
+                            <p>
+                                <strong>Имя:</strong> <a href="/Page/SelectCharacter/@item.Id">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </a>
+                            </p>
+                            <p>
+                                <strong>Раса:</strong> @Html.DisplayFor(modelItem => item.CharacterRase.Name)
+                            </p>
+                            <p>
+                                <strong>Тип:</strong> @Html.DisplayFor(modelItem => item.CharacterType.Name)
+                            </p>
+                        </li>
+                        <br/>
+                    }
+                </ul>
+                <div>
+                    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("CharacterList", new { page }))
+                </div>
+            }
+        </div>
+    </div>
+</div>

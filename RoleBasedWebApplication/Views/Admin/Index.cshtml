@@ -1,0 +1,41 @@
+﻿@model PagedList.IPagedList<RoleBasedWebApplication.Models.Artifact>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Список артифактов</h2>
+
+<p class="text-right">
+    @Html.ActionLink("Создать артифакт", "Create", null, new {@class = "btn btn-primary"})
+    @Html.ActionLink("Добавить администратора", "AddAdmin", null, new { @class = "btn btn-success" })
+</p>
+
+
+    @foreach (var item in Model)
+    {
+
+        <div class="well lead">
+            <p class="text-right">
+                @Html.ActionLink("Редактировать", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" })
+                @Html.ActionLink("Просмотреть", "Details", new { id = item.Id }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+            </p>
+            <p>
+                <strong>Название артифакта: </strong> @Html.DisplayFor(modelItem => item.Name)
+            </p>
+            <p>
+                <strong>Картинка артифакта: </strong> <img src="~/Content/Img/Artifacts/@Html.DisplayFor(modelItem => item.ArtifactImage.Src)" alt="" />
+            </p>
+            <p>
+                <strong>Описание артифакта: </strong>
+            <p>
+                @Html.DisplayFor(modelItem => item.Description)
+            </p>
+            </p>
+        </div>
+    }
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))

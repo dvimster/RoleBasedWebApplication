@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNet.Identity
+@using RoleBasedWebApplication.Models
+@using PagedList.Mvc;
+@model PagedList.IPagedList<RoleBasedWebApplication.Models.Artifact>
+
+@{
+    ViewBag.Title = "Покупка артифакта";
+}
+
+<h2>Покупка артифакта</h2>
+<div class="row">
+    <p class="text-right">
+        @Html.ActionLink("К списку персонажей", "CharacterList", "Page", null, new { @class = "btn btn-primary" })
+    </p>
+    <div id="orders">
+        @foreach (var item in Model)
+        {
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="well">
+                        <strong>Название артифакта</strong>:
+                        <p class="lead">@item.Name</p>
+                        <img src="~/Content/Img/Artifacts/@item.ArtifactIcon.Src" hight="30px" width="30px" /> <br />
+
+                        <div class="text-right">
+                            <button class="btn btn-info showDetail" onclick="showDetailInfo('detail-' + @item.Id)">Просмотр</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="well detail" id="detail-@item.Id">
+                        <div class="text-right">
+                            <button class="btn btn-default" onclick="hideDetailInfo('detail-' + @item.Id);"><span class="glyphicon glyphicon-remove"></span></button>
+                        </div>
+                        <strong>Клас артифакта:</strong>
+                        <p class="lead">@item.ArtifactClass.Name</p>
+                        <strong>Тип артифакта:</strong>
+                        <p class="lead">@item.ArtifactType.Name</p>
+                        <strong>Свойства:</strong>
+                        <p class="lead">@item.Properties</p>
+                        <strong>Описание:</strong>
+                        <p class="lead">@item.Description</p>
+                        <strong>Стоимость:</strong>
+                        <p class="lead">@item.OrderWorth</p>
+                        <img src="~/Content/Img/Artifacts/@item.ArtifactImage.Src" />
+                        <div class="text-right">
+                            @using (Html.BeginForm())
+                            {
+                                <input type="hidden" name="UserId" value="@User.Identity.GetUserId()" />
+                                <input type="hidden" name="ArtifactId" value="@item.Id" />
+                                <input type="hidden" name="OrderWorth" value="@item.OrderWorth" />
+                                <input type="submit" value="Приобрести" class="btn btn-primary" />
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+    <div>
+        Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("Buying", new { page, id = Url.RequestContext.RouteData.Values["id"] }))
+    </div>
+    <div id="filter">
+
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(function() {
+        var filter = $('#filter');
+        var orders = $('#orders');
+        filter.on('keypress', function() {
+            $.ajax({
+                url: '/api/filter/' + $('#filter').val(),
+                type: 'Get',
+                success: function(data) {
+                        console.log(data);
+                    }
+                
+            });
+        });
+    });
+</script>

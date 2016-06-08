@@ -1,0 +1,61 @@
+﻿@using System.Collections
+@model RoleBasedWebApplication.Models.Character
+
+@{
+    ViewBag.Title = "Создание персонажа";
+}
+
+<h2>Создание персонажа</h2>
+
+<div class="c-list">
+    <p class="text-right">
+        @Html.ActionLink("Назад", "CharacterList", "Page", null, new {@class = "btn btn-primary"})
+    </p>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr/>
+            @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new {htmlAttributes = new {@class = "form-control"}})
+                    @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CharacterTypeId, "Тип", htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    @Html.DropDownList("CharacterTypeId", null, htmlAttributes: new {@class = "form-control"})
+                    @Html.ValidationMessageFor(model => model.CharacterTypeId, "", new {@class = "text-danger"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CharacterRaseId, "Расса", htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    @Html.DropDownList("CharacterRaseId", null, htmlAttributes: new {@class = "form-control"})
+                    @Html.ValidationMessageFor(model => model.CharacterRaseId, "", new {@class = "text-danger"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CharacterAvatarId, "Аватар", htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    @*@Html.DropDownList("CharacterAvatarId", null, htmlAttributes: new {@class = "imageList form-control"})*@
+                    <select class="imageList form-control" name="CharacterAvatarId"></select>
+                    @Html.ValidationMessageFor(model => model.CharacterAvatarId, "", new {@class = "text-danger"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Создать" class="btn btn-default"/>
+                </div>
+            </div>
+        </div>
+    }
+</div>
