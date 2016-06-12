@@ -12,6 +12,21 @@
     <p class="text-right">
         @Html.ActionLink("К списку персонажей", "CharacterList", "Page", null, new { @class = "btn btn-primary" })
     </p>
+    <div class="form-inline">
+        <div class="form-group">
+            <input type="text" class="form-control" id="val" placeholder="Имя">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" id="priceFrom" placeholder="Цена от">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" id="priceTo" placeholder="Цена до">
+        </div>
+        <input type="button" class="btn btn-danger" id="searchBtn" value="Найти" />
+        @Html.ActionLink("Сбросить фильтры", "Buying", "Page", new { id = Url.RequestContext.RouteData.Values["id"] }, new {@class = "btn btn-warning"})
+        <hr />
+    </div>
+    <div id="showFiltered"></div>
     <div id="orders">
         @foreach (var item in Model)
         {
@@ -50,6 +65,7 @@
                                 <input type="hidden" name="UserId" value="@User.Identity.GetUserId()" />
                                 <input type="hidden" name="ArtifactId" value="@item.Id" />
                                 <input type="hidden" name="OrderWorth" value="@item.OrderWorth" />
+                                <input type="hidden" name="CharacterId" value="@Url.RequestContext.RouteData.Values["id"]" />
                                 <input type="submit" value="Приобрести" class="btn btn-primary" />
                             }
                         </div>
@@ -58,30 +74,93 @@
 
             </div>
         }
-    </div>
-    <div>
-        Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+        <div>
+            Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 
-        @Html.PagedListPager(Model, page => Url.Action("Buying", new { page, id = Url.RequestContext.RouteData.Values["id"] }))
+            @Html.PagedListPager(Model, page => Url.Action("Buying", new { page, id = Url.RequestContext.RouteData.Values["id"] }))
+        </div>
     </div>
-    <div id="filter">
-
-    </div>
+    
 </div>
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
     $(function() {
-        var filter = $('#filter');
+        var searchBtn = $('#searchBtn');
+        var search = $('#val');
+        var priceFrom = $('#priceFrom');
+        var priceTo = $('#priceTo');
         var orders = $('#orders');
-        filter.on('keypress', function() {
+        searchBtn.on('click', function(e) {
+            e.preventDefault();
+            $('#showFiltered').text('');
             $.ajax({
-                url: '/api/filter/' + $('#filter').val(),
-                type: 'Get',
+                url: '/api/filter/',
+                type: 'Post',
+                data: {
+                    name: search.val(),
+                    priceFrom: priceFrom.val(),
+                    priceTo: priceTo.val()
+                },
                 success: function(data) {
-                        console.log(data);
+                    orders.hide();
+                    if (data.length < 1) {
+                        alert("Таких результатов нет");
+                        window.location.reload();
+                    } else {
+                        $('#filteredArtifacts').tmpl(data).appendTo('#showFiltered');
+                        
                     }
-                
+                    console.log(data);
+                }
+
             });
         });
     });
+</script>
+<script id="filteredArtifacts" type="text/x-jquery-tmpl">
+    <div id="filteredOrders">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="well">
+                    <strong>Название артифакта</strong>:
+                    <p class="lead">${Name}</p>
+                    <img src="/Content/Img/Artifacts/${ArtifactIcon.Src}" hight="30px" width="30px" /> <br />
+
+                    <div class="text-right">
+                        <button class="btn btn-info showDetail" onclick="showDetailInfo('detail-' + ${Id})">Просмотр</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="well detail" id="detail-${Id}">
+                    <div class="text-right">
+                        <button class="btn btn-default" onclick="hideDetailInfo('detail-' + ${Id});"><span class="glyphicon glyphicon-remove"></span></button>
+                    </div>
+                    <strong>Клас артифакта:</strong>
+                    <p class="lead">${ArtifactClass.Name}</p>
+                    <strong>Тип артифакта:</strong>
+                    <p class="lead">${ArtifactType.Name}</p>
+                    <strong>Свойства:</strong>
+                    <p class="lead">${Properties}</p>
+                    <strong>Описание:</strong>
+                    <p class="lead">${Description}</p>
+                    <strong>Стоимость:</strong>
+                    <p class="lead">${OrderWorth}</p>
+                    <img src="/Content/Img/Artifacts/${ArtifactImage.Src}" />
+                    <div class="text-right">
+                        @using (Html.BeginForm())
+                        {
+                            <input type="hidden" name="UserId" value="@User.Identity.GetUserId()" />
+                            <input type="hidden" name="ArtifactId" value="${Id}" />
+                            <input type="hidden" name="OrderWorth" value="${OrderWorth}" />
+                            <input type="hidden" name="CharacterId" value="@Url.RequestContext.RouteData.Values["id"]" />
+                            <input type="submit" value="Приобрести" class="btn btn-primary" />
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </script>

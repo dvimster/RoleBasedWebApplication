@@ -49,20 +49,21 @@ namespace RoleBasedWebApplication.Controllers
                 {
                     ArtifactId = model.ArtifactId,
                     DateTime = DateTime.Now,
-                    UserId = model.UserId
+                    UserId = model.UserId,
+                    CharacterId = int.Parse(Request.Form["CharacterId"])
                 };
                 var currentUser = model.UserId;
 
-                var currentCharacter = db.Characters.FirstOrDefault(c => c.UserId == currentUser && c.Id == id);
+                var currentCharacter = db.Characters.Where(c => c.UserId == currentUser && c.Id == id).ToArray();
 
                 var artifactOrder = db.Artifacts.FirstOrDefault(a => a.Id == model.ArtifactId);
                 
 
-                if (currentCharacter.GoldDime < artifactOrder.OrderWorth)
+                if (currentCharacter[0].GoldDime < artifactOrder.OrderWorth)
                 {
                     return Content("У вас недостаточно золотых монет для покупки этого артифакта");
                 }
-                currentCharacter.GoldDime -= artifactOrder.OrderWorth;
+                currentCharacter[0].GoldDime -= artifactOrder.OrderWorth;
                 db.Characters.AddOrUpdate(currentCharacter);
                 db.Buyings.Add(newBuying);
                 db.SaveChanges();
@@ -77,7 +78,8 @@ namespace RoleBasedWebApplication.Controllers
             int pageSize = 3;
             int pageNumber = (page ?? 1);
             var currentUser = User.Identity.GetUserId();
-            var buyingArtifacts = db.Buyings.Where(a => a.UserId == currentUser);
+            int characterId = int.Parse(Url.RequestContext.RouteData.Values["id"].ToString());
+            var buyingArtifacts = db.Buyings.Where(a => a.UserId == currentUser && a.CharacterId == characterId);
             var characterName = db.Characters.Where(c => c.Id == id).ToArray();
             ViewBag.CharacterName = characterName[0].Name;
             return View(buyingArtifacts.OrderBy(a => a.Id).ToPagedList(pageNumber, pageSize));

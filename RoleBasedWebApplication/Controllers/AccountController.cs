@@ -56,20 +56,22 @@ namespace RoleBasedWebApplication.Controllers
             }
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            
             if (User.IsInRole(SecurityRoles.User))
             {
                 return RedirectToAction("CharacterList", "Page");
-
             }
+            
             if (User.IsInRole(SecurityRoles.Admin))
             {
                 return RedirectToAction("Index", "Admin");
-
             }
+
             switch (result)
             {
                 case SignInStatus.Success:
                     return RedirectToLocal(returnUrl);
+                    //return RedirectToAction("CharacterList", "Page");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.Failure:
@@ -116,13 +118,28 @@ namespace RoleBasedWebApplication.Controllers
                     Login = model.Login
                 };
 
-                await manager.CreateAsync(user, model.Password);
-                await manager.AddToRoleAsync(user.Id, SecurityRoles.User);
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
+                var result = await manager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    await manager.AddToRoleAsync(user.Id, SecurityRoles.User);
+                    await signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
+                    return RedirectToAction("CharacterList", "Page");
+                }
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+
+                /*var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
                 if (result == SignInStatus.Success)
                 {
                     return RedirectToAction("Index", "Home");
-                }
+                }*/
             }
 
             return View(model);

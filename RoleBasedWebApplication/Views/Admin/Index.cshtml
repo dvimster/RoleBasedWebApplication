@@ -11,8 +11,24 @@
     @Html.ActionLink("Создать артифакт", "Create", null, new {@class = "btn btn-primary"})
     @Html.ActionLink("Добавить администратора", "AddAdmin", null, new { @class = "btn btn-success" })
 </p>
-
-
+<div>
+    <div class="form-inline">
+        <div class="form-group">
+            <input type="text" class="form-control" id="val" placeholder="Имя">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" id="priceFrom" placeholder="Цена от">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" id="priceTo" placeholder="Цена до">
+        </div>
+        <input type="button" class="btn btn-danger" id="searchBtn" value="Найти"/>
+        @Html.ActionLink("Сбросить фильтры", "Index", "Admin", null, new {@class = "btn btn-warning"})
+        <hr/>
+    </div>
+</div>
+<div id="showFiltered"></div>
+<div id="orders">
     @foreach (var item in Model)
     {
 
@@ -36,6 +52,64 @@
             </p>
         </div>
     }
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(function() {
+        var searchBtn = $('#searchBtn');
+        var search = $('#val');
+        var priceFrom = $('#priceFrom');
+        var priceTo = $('#priceTo');
+        var orders = $('#orders');
+        searchBtn.on('click', function(e) {
+            e.preventDefault();
+            $('#showFiltered').text('');
+            $.ajax({
+                url: '/api/filter/',
+                type: 'Post',
+                data: {
+                    name: search.val(),
+                    priceFrom: priceFrom.val(),
+                    priceTo: priceTo.val()
+                },
+                success: function(data) {
+                    orders.hide();
+                    if (data.length < 1) {
+                        alert("Таких результатов нет");
+                        location.href = '/Admin/Index';
+                    } else {
+                        $('#filteredArtifacts').tmpl(data).appendTo('#showFiltered');
+
+                    }
+                    console.log(data);
+                }
+
+            });
+        });
+    });
+</script>
+<script id="filteredArtifacts" type="text/x-jquery-tmpl">
+    <div class="well lead">
+        <p class="text-right">
+            <a href="/Admin/Edit/${Id}" class="btn btn-warning">Редактировать</a>
+            <a href="/Admin/Details/${Id}" class="btn btn-info">Просмотреть</a>
+            <a href="/Admin/Delete/${Id}" class="btn btn-danger">Удалить</a>
+        </p>
+        <p>
+            <strong>Название артифакта: </strong> ${Name}
+        </p>
+        <p>
+            <strong>Картинка артифакта: </strong> <img src="/Content/Img/Artifacts/${ArtifactImage.Src}" alt="" />
+        </p>
+        <p>
+            <strong>Описание артифакта: </strong>
+        <p>
+            ${Description}
+        </p>
+        </p>
+    </div>
+</script>
