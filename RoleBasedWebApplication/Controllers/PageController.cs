@@ -54,16 +54,16 @@ namespace RoleBasedWebApplication.Controllers
                 };
                 var currentUser = model.UserId;
 
-                var currentCharacter = db.Characters.Where(c => c.UserId == currentUser && c.Id == id).ToArray();
+                var currentCharacter = db.Characters.FirstOrDefault(c => c.UserId == currentUser && c.Id == id);
 
                 var artifactOrder = db.Artifacts.FirstOrDefault(a => a.Id == model.ArtifactId);
                 
 
-                if (currentCharacter[0].GoldDime < artifactOrder.OrderWorth)
+                if (currentCharacter.GoldDime < artifactOrder.OrderWorth)
                 {
                     return Content("У вас недостаточно золотых монет для покупки этого артифакта");
                 }
-                currentCharacter[0].GoldDime -= artifactOrder.OrderWorth;
+                currentCharacter.GoldDime -= artifactOrder.OrderWorth;
                 db.Characters.AddOrUpdate(currentCharacter);
                 db.Buyings.Add(newBuying);
                 db.SaveChanges();
@@ -80,8 +80,8 @@ namespace RoleBasedWebApplication.Controllers
             var currentUser = User.Identity.GetUserId();
             int characterId = int.Parse(Url.RequestContext.RouteData.Values["id"].ToString());
             var buyingArtifacts = db.Buyings.Where(a => a.UserId == currentUser && a.CharacterId == characterId);
-            var characterName = db.Characters.Where(c => c.Id == id).ToArray();
-            ViewBag.CharacterName = characterName[0].Name;
+            var characterName = db.Characters.FirstOrDefault(c => c.Id == id);
+            ViewBag.CharacterName = characterName.Name;
             return View(buyingArtifacts.OrderBy(a => a.Id).ToPagedList(pageNumber, pageSize));
         }
 
@@ -101,9 +101,9 @@ namespace RoleBasedWebApplication.Controllers
                 var characterId = int.Parse(Request.Form["CharacterId"]);
                 var currentUser = model.UserId;
                 
-                var currentCharacter = db.Characters.Where(c => c.UserId == currentUser && c.Id == characterId).ToArray();
+                var currentCharacter = db.Characters.FirstOrDefault(c => c.UserId == currentUser && c.Id == characterId);
 
-                currentCharacter[0].GoldDime = currentCharacter[0].GoldDime + saleWorth;
+                currentCharacter.GoldDime = currentCharacter.GoldDime + saleWorth;
                 db.Characters.AddOrUpdate(currentCharacter);
 
                 var selling = db.Buyings.Find(model.Id);
